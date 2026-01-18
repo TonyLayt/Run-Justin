@@ -28,6 +28,17 @@ Player::Player(float setPosX, float setPosY, std::vector<Object> &objs, std::vec
 			std::cout << "Error load texture" << std::endl;
 		}
 		jumpFrames.push_back(addTextureJump);
+	
+	}
+
+	for (int countFrameAt = 0; countFrameAt < 3; ++countFrameAt){
+		sf::Texture addTextureAttack;
+		if (!addTextureAttack.loadFromFile("img/playerSprite/Attack__00" + std::to_string(countFrameAt) + ".png"))
+		{
+			std::cout << "Error load texture" << std::endl;
+		}
+		
+		attackFrames.push_back(addTextureAttack);
 	}
 
 	playerRect = sf::FloatRect(setPosX, setPosY, 50, 110);
@@ -105,7 +116,24 @@ void Player::update()
 	{
 		inactivitAnimation = true;
 	}
+
+	if (attackAnimation)
+	{
+		if (currentFrameAt >= attackFrames.size())
+		{
+			currentFrameAt = 0;
+			attackAnimation = false;
+		}
+		plySprite.setTexture(attackFrames[currentFrameAt]); // анимация атаки
+		currentFrameAt += speedFrameAt;
+		plySprite.setTextureRect(sf::IntRect(5, 5, 600, 486));
+	}
+	else
+	{
+		inactivitAnimation = true;
+	}
 	goX = 0;
+
 }
 
 bool Player::getCheckGemeOverEvents()
@@ -116,13 +144,13 @@ bool Player::getCheckGemeOverEvents()
 void Player::performAttack()
 {
 	checkCollisionWithEnemy = true;
-	rectAttacjShape.setPosition(playerRect.left + 30, playerRect.top);
+	rectAttacjShape.setPosition(playerRect.left + 70, playerRect.top);
 	rectAttacjShape.setSize(sf::Vector2f(playerRect.width, playerRect.height));
 	rectAttacjShape.setFillColor(sf::Color::Transparent); // Прозрачный фон
 	rectAttacjShape.setOutlineThickness(2);				  // Толщина границы
 	rectAttacjShape.setOutlineColor(sf::Color::Yellow);	  // Цвет границы
 
-	knifeRect = sf::FloatRect(playerRect.left + 30, playerRect.top, playerRect.width, playerRect.height);
+	knifeRect = sf::FloatRect(playerRect.left + 70, playerRect.top, playerRect.width, playerRect.height);
 
 	for (int countEnemy = 0; countEnemy < enemy.size(); countEnemy++)
 	{

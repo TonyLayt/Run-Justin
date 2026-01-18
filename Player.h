@@ -20,9 +20,10 @@ public:
 	float BoxPosY;
 	
 
-	bool inactivitAnimation = true;
+	bool inactivitAnimation = false;
 	bool runAnimation;
 	bool jumpAnimation;
+	bool attackAnimation;
 
     sf::Sprite plySprite;
     sf::FloatRect playerRect;
@@ -47,12 +48,15 @@ private:
 	std::vector<sf::Texture> inactivitFrames;
 	std::vector<sf::Texture> runFrames;
 	std::vector<sf::Texture> jumpFrames;
+	std::vector<sf::Texture> attackFrames;
 	//std::vector<Properti> templMap;
 	std::vector<Object>& objs;
 	std::vector<Enemy>& enemy;
 	bool GemeOverEvents = true;
 	bool checkCollisionWithEnemy = false;
 	float currentFrame = 0;
+	float currentFrameAt = 0;
 	float speedFrame = 0.1f;
+	float speedFrameAt = 0.2f;
 	const float gravity = 0;
 };
