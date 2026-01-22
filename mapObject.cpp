@@ -60,16 +60,15 @@ void mapObject::processingMap(Player &upAnimationSpeed, float &vailSpeedBG)
                 randPointSpavn = rand() % (3 - 1 + 1) + 1;
                 numbPlatform = itemCount;
                 conteinerObjct[itemCount].rect.left = 1800; // 1500
-            }
-
-            if (enemy[0].enemyRect.left < -90)
-            {
-                std::cout << "enemyy0 " << enemy[0].enemyRect.left << std::endl;
-                enemy[0].reset(false);
-            }
-            if (enemy[1].enemyRect.left < -90)
-            {
-                enemy[1].reset(false);
+                              
+                if (itemCount == 1) 
+                {
+                    enemy[0].reset(false);
+                }
+                if (itemCount == 2) 
+                {
+                    enemy[1].reset(false);
+                }
             }
         }
     }

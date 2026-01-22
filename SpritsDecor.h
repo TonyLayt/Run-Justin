@@ -29,10 +29,15 @@ public:
 	void DrawDecore(sf::RenderWindow& window);
 
 private:
-    int randPointBrush = 60;
-    int randPointTree = 160;
+    int randPointBrush = 0;
+	int randPointBrush_2 = 0;
+	int randPointBrush_3 = 0;
+    int randPointTree = 0; 
+	int randPointTree_2 = 0;
     int randSpawnFirst = 0;
     int randSpawnSecond = 0;
+	int tombStone = 0;
+	int tombStone_1 = 0;
 
 
 	vector <ObjectDecor> objectDecors;

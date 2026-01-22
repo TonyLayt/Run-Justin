@@ -17,6 +17,7 @@ ProcessingSpawnObject::ProcessingSpawnObject()
 	addTexture[2].loadFromFile("img/objectsSpite/Bush_3.png");
 
 	addTexture[3].loadFromFile("img/objectsSpite/Tree.png");
+
 	addTexture[4].loadFromFile("img/objectsSpite/TombStone_1.png");
 	addTexture[5].loadFromFile("img/objectsSpite/TombStone_2.png");
 
@@ -57,24 +58,32 @@ void ProcessingSpawnObject::respDecore (int x, int y)
     if (x + 760 < 0)
     {
         randPointBrush = rand() % (560 - 60 + 1) + 60;
-        randPointTree = rand() % (560 - 60 + 1) + 60;
-        randSpawnFirst = rand() % 8;
-        randSpawnSecond = rand() % 8;
+        randPointBrush_2 = rand() % (560 - 60 + 1) + 60;
+        randPointBrush_3 = rand() % (560 - 60 + 1) + 60;
+
+        randPointTree = rand() % (520 - 60 + 1) + 80;
+        randPointTree_2 = randPointTree - 200;
+
+        tombStone = rand() % (560 - 60 + 1) + 60;
+        tombStone_1 = rand() % (560 - 60 + 1) + 60;
+
+        randSpawnFirst = rand() % 7 + 1; 
+        randSpawnSecond = rand() % 7 + 1;
 
     }
 
     std::cout << "randSpawnFirst: " << randSpawnFirst << " " << "randSpawnSecond: " << randSpawnSecond << std::endl;
-    if (randSpawnFirst==1 || randSpawnSecond==2)
+    if (randSpawnFirst==3 || randSpawnSecond==2)
     {
         objectDecors[0].sprite.setPosition(x + randPointBrush, y - 60); //brush
     }
     if (randSpawnSecond==2 || randSpawnFirst==1)
     {
-        objectDecors[1].sprite.setPosition(x + randPointTree, y - 70);
+        objectDecors[1].sprite.setPosition(x + randPointBrush_2, y - 70);
     }
     if (randSpawnFirst==3 || randSpawnSecond==4)
     {
-        objectDecors[2].sprite.setPosition(x + randPointBrush, y - 80);
+        objectDecors[2].sprite.setPosition(x + randPointBrush_3, y - 80);
     }
     if (randSpawnSecond==4 || randSpawnFirst==7)
     {
@@ -82,15 +91,15 @@ void ProcessingSpawnObject::respDecore (int x, int y)
     }
     if (randSpawnFirst==5 || randSpawnSecond==4)
     {
-        objectDecors[4].sprite.setPosition(x + randPointBrush, y - 160);
+        objectDecors[4].sprite.setPosition(x + randPointTree_2, y - 160); // tree
     }
     if (randSpawnSecond==6 || randSpawnFirst==5)
     {
-        objectDecors[5].sprite.setPosition(x + randPointTree, y - 35);
+        objectDecors[5].sprite.setPosition(x + tombStone, y - 35); //tombStone
     }
-    if (randSpawnFirst==7)
+    if (randSpawnFirst==7) 
     {
-        objectDecors[6].sprite.setPosition(x + randPointBrush, y - 50);
+        objectDecors[6].sprite.setPosition(x + tombStone_1, y - 50);
     }
 
 }
