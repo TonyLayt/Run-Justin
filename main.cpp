@@ -7,6 +7,7 @@
 #include "SpritsDecor.h"
 #include "backGround .h"
 #include "gameOverScreen.h"
+#include "Gui.h"
 #include <iostream>
 #include <filesystem>
 
@@ -137,6 +138,7 @@ public:
         BG.speedBG(valSpeedBG);
         player->update();
         player->runAnimation = true;
+        makeGuiProcess.setKills(3);
         while (window.pollEvent(event))
         {
             if (event.type == sf::Event::Closed)
@@ -188,7 +190,7 @@ public:
             chekAnimatioMuve = true;
         } // false, false
 
-
+        // DRAW PLACE
         window.clear();
         BG.DrawBG(window);
         for (auto& decor : decorObjects)
@@ -210,6 +212,7 @@ public:
         {
             std::cout << "!Empty!" << std::endl;
         }
+        makeGuiProcess.drawGui(window); 
 
         window.display();
 
@@ -219,6 +222,7 @@ public:
 private:
     sf::Clock clock;
     backGround BG;
+    CountGui makeGuiProcess;
     Level level;
     std::unique_ptr<Player> player;
     std::vector<Object>& objectForMap = level.GetAllObjects();

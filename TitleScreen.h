@@ -21,6 +21,7 @@ class TitleScreen
         Texture textureButton;
         Sprite imageTitle;
         Sprite startButton;
+
 };
 
 
