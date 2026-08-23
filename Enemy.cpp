@@ -37,7 +37,6 @@ Enemy::Enemy()
 	//enemySprite.setTexture(texture[0]);
 	enemySprite.setScale(0.3f, 0.3f);
 	enemyBlood.setScale(0.1f, 0.1f);
-
 }
 
 void Enemy::kill(bool status)
@@ -52,6 +51,7 @@ void Enemy::reset(bool status)
 	if (checkStatusLife == true) {
 		checkStatusLife = status;
 		movSpeed = 3;
+		checkKillPush = false;
 	}
 }
 
@@ -108,7 +108,6 @@ void Enemy::enemySpawn(int platformX, int platformY) // утановить точку для обек
 
 	
 	if (checkStatusLife) {
-
 		if (currentFrameBlood >= textureBlood.size()-1)
 		{
 			speedFrameBlood = 0;

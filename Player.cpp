@@ -44,6 +44,9 @@ Player::Player(float setPosX, float setPosY, std::vector<Object> &objs, std::vec
 		attackFrames.push_back(addTextureAttack);
 	}
 
+	buffer_knife.loadFromFile("sound/swing.wav");
+	sound_knife.setBuffer(buffer_knife);
+
 	playerRect = sf::FloatRect(setPosX, setPosY, 50, 110);
 
 	plySprite.setScale(0.3f, 0.3f);
@@ -131,11 +134,12 @@ void Player::update()
 		}
 		plySprite.setTexture(attackFrames[currentFrameAt]); // анимация атаки
 		currentFrameAt += speedFrameAt;
+		sound_knife.play();
 		plySprite.setTextureRect(sf::IntRect(5, 5, 600, 486));
 	}
 	
 	goX = 0;
-
+	playerGui.setKills(kills);
 }
 
 bool Player::getCheckGemeOverEvents()
@@ -165,6 +169,11 @@ void Player::performAttack()
 		if (knifeRect.intersects(sf::FloatRect(enemy[countEnemy].enemyRect)) && onGround)
 		{
 			enemy[countEnemy].kill(true);
+		}
+
+		if (enemy[countEnemy].getStatusLife() && !enemy[countEnemy].checkKillPush) {
+			enemy[countEnemy].checkKillPush = true;
+			kills++;
 		}
 	}
 }
@@ -248,8 +257,13 @@ int Player::playerDraw(sf::RenderWindow &window)
 	window.draw(rectShape);*/
 	window.draw(plySprite);
 	window.setView(view);
-
+	playerGui.drawGui(window);
 	std::cout << "PLAYERDRAW" << std::endl;
 
 	return 0;
+}
+
+int Player::getKills()
+{
+	return kills;
 }

@@ -2,6 +2,7 @@
 
 #include <iostream>
 #include <SFML/Graphics.hpp>
+#include <SFML/Audio.hpp>
 
 
 class Enemy {
@@ -15,6 +16,7 @@ public:
 	void reset(bool status);
 	bool getStatusLife();
 	void setAttack(bool status);
+	bool checkKillPush = false;
     sf::FloatRect enemyRect;
 
 private:
@@ -46,6 +48,5 @@ private:
 	std::vector<sf::Texture> textureAttack;
 
 	sf::RectangleShape rectShape;
-
 
 };

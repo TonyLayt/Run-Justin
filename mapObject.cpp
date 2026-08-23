@@ -33,14 +33,14 @@ void mapObject::processingMap(Player &upAnimationSpeed, float &vailSpeedBG)
         checkOpenProcessingMap = false;
     }
 
-    sf::Time elapsed = gameClock.getElapsedTime(); // сколько прошло с момента запуска
-    float seconds = elapsed.asSeconds();           // в секундах (float)
+    
+    float seconds = vailSpeedBG;         // в секундах (float)
     std::cout << "TIME_" << seconds << std::endl;
 
     if (seconds > timeLimit)
     {
         speed += 1;
-        vailSpeedBG += 0.80f;
+        //vailSpeedBG += 0.80f;
         timeLimit += 20;
         upAnimationSpeed.SetAnimationSpeed(0.01f);
         std::cout << "XYYSYSYSYSYS_ " << seconds << std::endl;

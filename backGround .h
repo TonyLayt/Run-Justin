@@ -18,7 +18,9 @@ class backGround
     protected:
 
     private:
+        int speedLim = 20;
         int speed = 0;
+        int muve = 5;
         bool checkMovement = true;
         RectangleShape forTestSprite;
         Texture texture[7];

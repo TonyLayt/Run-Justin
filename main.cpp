@@ -1,4 +1,5 @@
 #include <SFML/Graphics.hpp>
+#include <SFML/Audio.hpp>
 #include "TitleScreen.h"
 #include "mapObject.h"
 #include "Player.h"
@@ -13,10 +14,12 @@
 
 bool firstEnemy = true;
 bool secondEnemy = false;
+int counterKillsRecord = 0;
 
 enum Screen
 {
     TitleMain,
+	Pause,
     Loading,
     Game,
     GameOver
@@ -85,29 +88,95 @@ public:
         }
         player = std::make_unique<Player>(90, 450, objectForMap, entity);
         texturOnObject = std::make_unique<mapObject>(objectForMap, entity);
+        
+		music.openFromFile("sound/Graveyard_High_Score.mp3");
+		music.setVolume(30);
+		music.setLoop(true);
+		//music.play();
 
-      
+        
+		buffer.loadFromFile("sound/player_run.wav");
+        sound.setBuffer(buffer);
+        sound.setPitch(0.7f);
+
+		buffer_jump.loadFromFile("sound/player_jump.wav");
+		sound_jump.setBuffer(buffer_jump);
+
+        buffer_damage.loadFromFile("sound/damage_sound.wav");
+        sound_damage.setBuffer(buffer_damage);
+
+        buffer_death.loadFromFile("sound/death.wav");
+        sound_death.setBuffer(buffer_death);
+
     }
-
+   
     void tick(sf::RenderWindow& window, sf::Event& event) {
+        while (window.pollEvent(event))
+        {
+            if (event.type == sf::Event::Closed)
+            {
+                window.close();
+            }
+
+            if (event.type == sf::Event::KeyPressed &&
+                event.key.code == sf::Keyboard::Escape)
+            {
+                sound.pause();
+                music.pause();
+
+                current = Screen::Pause;
+
+                std::cout << "Escape pressed, pausing game." << std::endl;
+
+				return;
+            }
+        }
         
         texturOnObject->processingMap(*player, valSpeedBG);
         std::cout << "RANDOMAZER: " << texturOnObject->randPointSpavn << std::endl;
 
-        sf::Time timer = clock.getElapsedTime();
-        float secondsTimer = timer.asSeconds();
+        /*sf::Time timer = clock.getElapsedTime();
+        float secondsTimer = timer.asSeconds();*/
+        
+        
+        //std::cout << " BEFORE_RESET@ " << secondsTimer << std::endl;
+        if (player->getCheckGemeOverEvents())
+        {
+            if (secondClock.getElapsedTime().asSeconds() >= 1.0f)
+            {
+                survivalSeconds++;
+                secondClock.restart();
 
-        std::cout << " BEFORE_RESET@ " << secondsTimer << std::endl;
+                std::cout << "survivalSeconds: " << survivalSeconds << std::endl;
+            }
+
+            valSpeedBG = survivalSeconds;
+        }
+        else
+        {
+            valSpeedBG = 0.0f;
+        }
         if (!player->getCheckGemeOverEvents())
         {
+            deathTimer += survivalSeconds;
+          
+            if (!deathSoundPlayed)
+            {
+                sound_death.play();
+                deathSoundPlayed = true;
+            }
+            music.stop();
+            sound.stop();
+            valSpeedBG = 0.0f;
 
-            if (checkResetTimer) {
+            /*if (checkResetTimer) {
                 std::cout << "RESET " << secondsTimer << std::endl;
                 clock.restart();
                 checkResetTimer = false;
-            }
+            }*/
 
-            else if (secondsTimer > 1) {
+            if (deathTimer > 1) {
+				counterKillsRecord = player->getKills();
                 current = Screen::GameOver;
             }
 
@@ -138,23 +207,20 @@ public:
         BG.speedBG(valSpeedBG);
         player->update();
         player->runAnimation = true;
-        makeGuiProcess.setKills(3);
-        while (window.pollEvent(event))
-        {
-            if (event.type == sf::Event::Closed)
-                window.close();
-        }
-
-        if (event.type == sf::Event::MouseButtonPressed &&
-            event.mouseButton.button == sf::Mouse::Left && !checkButtonMouse && player->getCheckGemeOverEvents())
+                    
+        if (sf::Mouse::isButtonPressed(sf::Mouse::Left) && !checkButtonMouse && player->getCheckGemeOverEvents())
         {
             player->performAttack();
             player->attackAnimation = true;
             checkButtonMouse = true;
+            if (player->getKills() > lastNumbKill) {
+				sound_damage.play();
+                lastNumbKill++;
+            }
         }
-
-        if (event.type == sf::Event::MouseButtonReleased && event.mouseButton.button == sf::Mouse::Left)
-            checkButtonMouse = false;
+        if (!sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
+            checkButtonMouse = false ;
+		}
 
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space) && !checkButtonSpace && player->getCheckGemeOverEvents())
         {
@@ -163,17 +229,31 @@ public:
                 player->jumpAnimation = true;
                 player->goY -= 10;
                 checkButtonSpace = true;
+                sound.pause();
+                sound_jump.play();
             }
         }
         else {
-            if (player->onGround) { player->jumpAnimation = false; }
+            if (player->onGround && player->getCheckGemeOverEvents()) {
+                player->jumpAnimation = false;
+                if (sound.getStatus() != sf::Sound::Playing &&
+                    current != Screen::Pause) 
+                {
+                sound.play(); 
+                sound_jump.stop(); 
+                }
+            }
+            if (current != Screen::Pause && music.getStatus() != sf::Sound::Playing && player->getCheckGemeOverEvents())
+            {
+                music.play();
+            }
         }
 
         if (!sf::Keyboard::isKeyPressed(sf::Keyboard::Space))
         {
             checkButtonSpace = false;
         }
-
+     
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::D))
         {
             // player.runAnimation = true;
@@ -189,7 +269,7 @@ public:
         {
             chekAnimatioMuve = true;
         } // false, false
-
+        
         // DRAW PLACE
         window.clear();
         BG.DrawBG(window);
@@ -212,7 +292,7 @@ public:
         {
             std::cout << "!Empty!" << std::endl;
         }
-        makeGuiProcess.drawGui(window); 
+         
 
         window.display();
 
@@ -220,9 +300,20 @@ public:
 
 
 private:
-    sf::Clock clock;
+    //sf::Clock clock;
+    sf::Clock secondClock;
+
+
     backGround BG;
-    CountGui makeGuiProcess;
+    sf::Music music;
+    sf::Sound sound;
+    sf::Sound sound_jump;
+    sf::SoundBuffer buffer;
+    sf::SoundBuffer buffer_jump;
+    sf::Sound sound_damage;
+    sf::SoundBuffer buffer_damage;
+    sf::Sound sound_death;
+    sf::SoundBuffer buffer_death;
     Level level;
     std::unique_ptr<Player> player;
     std::vector<Object>& objectForMap = level.GetAllObjects();
@@ -234,8 +325,11 @@ private:
     bool checkButtonMouse = true;
     bool checkButtonSpace = true;
     bool checkResetTimer = true;
+    bool deathSoundPlayed = false;
+    int lastNumbKill = 0;
+    float deathTimer = 0.0f;
     float valSpeedBG = 5.00f;
-
+    int survivalSeconds = 0;
 };
 
 
@@ -272,6 +366,7 @@ int main(int argc, char *argv[])
             {
                 if (event.type == sf::Event::Closed)
                     window.close();
+              
             }
 
             if (event.type == sf::Event::MouseButtonPressed &&
@@ -286,6 +381,7 @@ int main(int argc, char *argv[])
                     current = Screen::Loading;
                 }
             }
+            
 
             window.clear();
             mainScreen.DrawTitle(window);
@@ -305,7 +401,7 @@ int main(int argc, char *argv[])
                 needCreateGame = false;
                 game = std::make_unique<GameProcessing>();
                 current = Screen::Game;
-            }
+            }else { current = Screen::TitleMain; }
         }
 
         else if (current == Screen::Game)
@@ -313,9 +409,31 @@ int main(int argc, char *argv[])
             game->tick(window, event);
         }
 
+        else if (current == Screen::Pause) {
+            while (window.pollEvent(event))
+            {
+                if (event.type == sf::Event::Closed)
+                {
+                    window.close();
+                }
+
+                if (event.type == sf::Event::KeyPressed &&
+                    event.key.code == sf::Keyboard::Escape)
+                {
+                    current = Screen::Game;
+                    
+                    std::cout << "Escape pressed, resuming game." << std::endl;
+                }
+            }
+           
+            //window.clear();
+            //Тут можно отрисовать паузу, например, затемнить экран и написать "Пауза"
+            //window.display();
+        }
+
         else if  (current == Screen::GameOver)
         {
-
+			gameOverScreen.setKillsST(counterKillsRecord); // тут нужно передать реальное количество убийств
             while (window.pollEvent(event))
             {
                 if (event.type == sf::Event::Closed)
@@ -331,6 +449,10 @@ int main(int argc, char *argv[])
                 if (gameOverScreen.GetRestartButton().getGlobalBounds().contains(static_cast<sf::Vector2f>(mousePos)))
                 {
                     needCreateGame = true;
+                    current = Screen::Loading;
+                }
+                if (gameOverScreen.GetExitButton().getGlobalBounds().contains(static_cast<sf::Vector2f>(mousePos)))
+                {
                     current = Screen::Loading;
                 }
                 

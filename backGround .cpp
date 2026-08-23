@@ -37,18 +37,19 @@ backGround ::backGround()
 
 void backGround::speedBG(float speed)
 {
-        if (speed)
+        if (speed > speedLim)
         {
-
-                segments[1].move(-speed + 4, 0); // 4
-                segments[2].move(-speed + 4, 0);
-
-                segments[3].move(-speed + 3, 0); // 3
-                segments[4].move(-speed + 3, 0);
-
-                segments[5].move(-speed + 1, 0); // 1
-                segments[6].move(-speed + 1, 0);
+			speedLim += 20;
+			muve += 1;
         }
+        segments[1].move(-muve + 4, 0); // 4
+        segments[2].move(-muve + 4, 0);
+
+        segments[3].move(-muve + 3, 0); // 3
+        segments[4].move(-muve + 3, 0);
+
+        segments[5].move(-muve + 1, 0); // 1
+        segments[6].move(-muve + 1, 0);
 
         if (segments[5].getPosition().x + segments[5].getGlobalBounds().width < -50 && checkMovement)
         {

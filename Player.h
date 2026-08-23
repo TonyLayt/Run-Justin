@@ -2,8 +2,10 @@
 
 #include <iostream>
 #include <SFML/Graphics.hpp>
+#include <SFML/Audio.hpp>
 #include "TestLoadTitleMap.h"
 #include "camera.h"
+#include "Gui.h"
 
 //#include "mapObject.h"
 #include "Enemy.h"
@@ -42,6 +44,7 @@ public:
 	void setCheckGemeOverEvents(bool bool_flag);
 	void performAttack();
 	int playerDraw(sf::RenderWindow& window);
+	int getKills();
 
 private:
 	sf::RectangleShape rectAttacjShape;
@@ -54,6 +57,7 @@ private:
 	//std::vector<Properti> templMap;
 	std::vector<Object>& objs;
 	std::vector<Enemy>& enemy;
+	CountGui playerGui;
 	bool GemeOverEvents = true;
 	bool checkCollisionWithEnemy = false;
 	float currentFrame = 0;
@@ -66,4 +70,9 @@ private:
 	float speedFrameAt = 0.2f;
 	float Xcon = 10.0;
 	const float gravity = 0;
+	int kills = 0;
+	bool stopAddCount = false;
+
+	sf::Sound sound_knife;
+	sf::SoundBuffer buffer_knife;
 };
