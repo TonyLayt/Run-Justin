@@ -81,7 +81,7 @@ public:
     GameProcessing() {
         
 
-        level.LoadFromFile("MyMapp.tmx");
+        level.LoadFromFile("mainMap.tmx");
         for (int enemyNamb = 0; enemyNamb < 2; enemyNamb++)
         {
             entity.push_back(zombie);
@@ -257,13 +257,13 @@ public:
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::D))
         {
             // player.runAnimation = true;
-            player->goX += 10;
+            //player->goX += 10;
         }
 
         else if (sf::Keyboard::isKeyPressed(sf::Keyboard::A))
         {
             // player.runAnimation = true;
-            player->goX -= 10;
+            //player->goX -= 10;
         }
         else
         {
@@ -349,7 +349,7 @@ int main(int argc, char *argv[])
     //std::cout << "START" << std::filesystem::current_path() << std::endl;
     
     bool needCreateGame = false;
-    sf::RenderWindow window(sf::VideoMode(960, 640), "Noname Game");
+    sf::RenderWindow window(sf::VideoMode(960, 640), "Run Justin");
     window.setFramerateLimit(60);
     sf::Event event;
     std::unique_ptr<GameProcessing> game;
