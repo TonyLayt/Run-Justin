@@ -2,6 +2,14 @@
 
 Run Justin is a small 2D action runner built with C++ and SFML. Justin runs through a cemetery, jumps over obstacles and fights zombies. The longer a run lasts, the faster the game becomes. The goal is to survive and defeat as many enemies as possible.
 
+## Gameplay
+
+![Run Justin gameplay](screenshots/gameplay.gif)
+
+| Gameplay | Game over |
+| --- | --- |
+| ![Gameplay](screenshots/gameplay.jpg) | ![Game over](screenshots/game-over.jpg) |
+
 ## Download
 
 The ready-to-play Windows version is available on the [Releases page](https://github.com/TonyLayt/Run-Justin/releases/latest).
