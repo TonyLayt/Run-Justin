@@ -350,6 +350,17 @@ int main(int argc, char *argv[])
     
     bool needCreateGame = false;
     sf::RenderWindow window(sf::VideoMode(960, 640), "Run Justin");
+    sf::Image windowIcon;
+
+    if (windowIcon.loadFromFile("img/GUI/zombie_head_ico.png"))
+    {
+        window.setIcon(
+            windowIcon.getSize().x,
+            windowIcon.getSize().y,
+            windowIcon.getPixelsPtr()
+        );
+    }
+
     window.setFramerateLimit(60);
     sf::Event event;
     std::unique_ptr<GameProcessing> game;
